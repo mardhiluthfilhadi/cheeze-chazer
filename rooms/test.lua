@@ -3,8 +3,8 @@ local Game = require "game"
 
 local collision_rects = {
     Game.Rectangle(   0, 400, 1000, 200),
-    Game.Rectangle(  40,   0,  100, 320),
-    Game.Rectangle( 270,   0,  100, 320),
+    Game.Rectangle(  40, 100,  100, 220),
+    Game.Rectangle( 240, 100,  100, 220),
 }
 local room = Game.New_Room({
     collision_rects=collision_rects,

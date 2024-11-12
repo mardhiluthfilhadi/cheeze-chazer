@@ -13,6 +13,8 @@ local CAT_MAX_SPEED = 10
 local CAT_ACCELERATOR = 2
 local CAT_SPEED_EPSILON = 5
 local CAT_GROUND_FRICTION = 25
+local CAT_MAX_JUMP_HEIGHT = 150
+local CAT_MIN_JUMP_HEIGHT = 120
 
 local meong = la.newSource("sounds/meong.wav", "static")
 meong:setPitch(1.3)
@@ -24,6 +26,7 @@ function cat_mt.draw(self)
     local frame = self.animations[self.current_animation].frames[math.floor(self.current_frame)]
     
     if frame then
+        lg.setColor(1,1,1)
     	local posx = self.rectangle.x + frame:getWidth()*2-(frame:getWidth()*2*self.last_facing)
         if self.sliding then
             posx = self.rectangle.x + frame:getWidth()
@@ -48,17 +51,22 @@ function cat_mt.standing_on_platform(self)
             end
         end
     end
-    
     return false,0
 end
 
 function cat_mt.apply_force(self,x,y,dt)
     self.vel.x = self.vel.x + x * CAT_ACCELERATOR * dt
     self.vel.y = self.vel.y + y * CAT_ACCELERATOR * dt
-
+    
     if self.vel.x>0 and self.vel.x >  CAT_MAX_SPEED then self.vel.x = CAT_MAX_SPEED end
     if self.vel.x<0 and self.vel.x < -CAT_MAX_SPEED then self.vel.x =-CAT_MAX_SPEED end
     if self.vel.y>0 and self.vel.y >  CAT_MAX_SPEED then self.vel.y = CAT_MAX_SPEED end
+    
+    if DEBUG then
+        if self.vel.y > -CAT_SPEED_EPSILON/2 and self.vel.y < CAT_SPEED_EPSILON/2 then
+            self.last_jump_height = self.rectangle.y
+        end
+    end
 end
 
 local function resolve_wall_ground_per_collison(self, it_index, it, index)
@@ -112,6 +120,8 @@ function cat_mt.apply_gravity(self, dt)
 end
 
 function cat_mt.jump(self, dt, back_jump)
+    self.begin_jump_height = self.rectangle.y
+    
     if self.sliding then
         self.sliding = false
         self.vel.y, self.vel.x = 0,0
@@ -121,6 +131,14 @@ function cat_mt.jump(self, dt, back_jump)
     else self:apply_force(back_jump or 0, -520, dt) end
     
     if not SILENT then meong:play() end
+end
+
+function cat_mt.update_while_jump(self, dt)
+    local max_height = CAT_MAX_JUMP_HEIGHT
+    if self.vel.x ~= 0 then max_height = CAT_MIN_JUMP_HEIGHT end
+    if self.begin_jump_height - self.rectangle.y >= max_height then
+        self.vel.y = 0
+    end
 end
 
 function cat_mt.update(self, dt)
@@ -201,8 +219,12 @@ function cat_mt.update(self, dt)
                 self.rotation =-60 * (1-2 * self.last_facing) * math.pi/360
             end
         end
-        
-        self:apply_gravity(dt)
+
+        if self.vel.y < 0 then
+            self:update_while_jump(dt)
+        else
+            self:apply_gravity(dt)
+        end
         self:resolve_wall_air()
     end
     self.rectangle.x = self.rectangle.x + self.vel.x
@@ -223,6 +245,7 @@ return function (game, anim_path)
     
     local cat = {
         rectangle=Game.Rectangle(0,0,64,64),
+        begin_jump_height=0,
         vel=Game.Vector2(0,0),
         sliding=false,
 
@@ -235,10 +258,15 @@ return function (game, anim_path)
         MOVE_RIGHT = false,
         MOVE_LEFT  = false,
         JUMP       = false,
-        
+
         game=game,
         room=nil,
     }
+
+    if DEBUG then
+        cat.last_jump_height = 0
+    end
+    
     setmetatable(cat, cat_mt)
     return cat
 end

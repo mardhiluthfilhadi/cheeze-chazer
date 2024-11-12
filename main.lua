@@ -1,8 +1,8 @@
 local lg = love.graphics
 
-DEBUG = false 
+DEBUG = true 
 BYPASS_TITLE = true
-BEGIN_ROOM = 2
+BEGIN_ROOM = 1
 SILENT = true
 
 BG_COLOR = {0xff/0xff, 0xc9/0xff, 0x39/0xff}

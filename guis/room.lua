@@ -7,6 +7,7 @@ local lk = love.keyboard
 local Game = require "game"
 
 local font = lg.newFont("fonts/VictorMono-Medium.otf", 30)
+local debug_font = lg.newFont("fonts/VictorMono-Medium.otf", 16)
 
 local room = Game.NewGUI("STATE_ROOM")
 room.buttons.menu = Game.Text_Button("menu", Game.width - 120, 40, 100, 80)
@@ -72,6 +73,7 @@ function room.update(game, dt)
     if r then r.update(game, dt) end
 end
 
+
 function room.draw(game)
     local r = game.rooms[game.current_room_index]
     
@@ -96,6 +98,18 @@ function room.draw(game)
                 lg.rectangle("line", rect.x, rect.y, rect.width, rect.height)
             end
         end
+
+        
+        local it = game.players[game.current_player]
+        lg.setFont(debug_font)
+        lg.setColor(0,0,0)
+        
+        lg.print(
+            "Player index: ".. game.current_player ..
+            "\n-velocity: { ".. it.vel.x ..", ".. it.vel.y .." }"..
+            "\n-last_jump_power: ".. it.last_jump_height,
+            it.rectangle.x, it.rectangle.y - 70
+        )
     end
 end
 
