@@ -13,7 +13,6 @@ local room = Game.NewGUI("STATE_ROOM")
 room.buttons.menu = Game.Text_Button("menu", Game.width - 120, 40, 100, 80)
 
 if ls.getOS()=="Android" or ls.getOS()=="IOS" or DEBUG then
-    -- ROOM GUIS --
     room.buttons.right = Game.Text_Button("right", 130, Game.height - 140, 100, 80)
     room.buttons.left  = Game.Text_Button("left", 20, Game.height - 140, 100, 80)
     room.buttons.jump  = Game.Text_Button("jump", Game.width - 120, Game.height - 140, 100, 80)
@@ -26,7 +25,7 @@ function room.init(game, room_index, respawn_index)
     game.current_respawn_index = 1
     local respawn_pos = r.respawn_positions[respawn_index or 1]
     r.on_start(game) 
-    
+
     local player = game.players[game.current_player]
     player.rectangle.x,player.rectangle.y = respawn_pos.x,respawn_pos.y
     player.room = r
@@ -34,7 +33,7 @@ end
 
 function room.update(game, dt)
     local gui_used = false
-    
+
     if ls.getOS()=="Android" or ls.getOS()=="IOS" then
         gui_used = Game.get_touch_gui_input(game)
     else
@@ -65,7 +64,7 @@ function room.update(game, dt)
         end
         game.players[game.current_player].JUMP = game.keyboard["space"] and game.keyboard["space"].pressed
     end
-    
+
     for _,it in pairs(game.players) do
         it:update(dt)
     end
@@ -73,14 +72,12 @@ function room.update(game, dt)
     if r then r.update(game, dt) end
 end
 
-
 function room.draw(game)
+    -- local cat = game.players[game.current_player]
     local r = game.rooms[game.current_room_index]
-    
+
     if r then r.background_draw() end
-    for _,it in pairs(game.players) do
-        it:draw()
-    end
+    for _,it in pairs(game.players) do it:draw() end
     if r then r.foreground_draw() end
     
     lg.setFont(font)
@@ -88,7 +85,7 @@ function room.draw(game)
         local w,h = font:getWidth(it.text),font:getHeight()
         lg.print(it.text, it.x + it.width/2 - w/2, it.y + it.height/2 - h/2)
     end
-    
+ 
     if DEBUG then
         if r then
             for _,rect in ipairs(r.collision_rects) do
@@ -99,8 +96,12 @@ function room.draw(game)
             end
         end
 
-        
         local it = game.players[game.current_player]
+        for i=1, it.life-1 do
+            lg.rectangle("line", 10+(i-1)*30, 10, 25, 25)
+        end
+
+        lg.rectangle("line", 10+(it.life-1)*30, 10, 25*it.health/10, 25)
         lg.setFont(debug_font)
         lg.setColor(0,0,0)
         

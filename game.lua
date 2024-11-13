@@ -43,7 +43,6 @@ function M.New_Game()
     }
 end
 
-
 --[[ @params
     room_data  := {
         respawn_positions: {<Vector2>} = {Vector2(10,10)},
@@ -71,7 +70,12 @@ function M.NewGUI(tag)
     assert(M[tag]==nil, "this tag: `"..tostring(tag).."` already exist." )
     M[tag] = M.state_count
     M.state_count = M.state_count+1
-    return {tag=tag,init=function(game,...)end,update=function(game,dt)end,draw=function(game)end,buttons={}}
+    return {
+        buttons={},tag=tag,
+        init=function(game,...)end,
+        update=function(game,dt)end,
+        draw=function(game)end,
+    }
 end
 
 local function update_game_scale_and_offset(game, width, height)

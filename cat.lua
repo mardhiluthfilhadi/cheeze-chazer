@@ -249,6 +249,9 @@ return function (game, anim_path)
         vel=Game.Vector2(0,0),
         sliding=false,
 
+        life=9,
+        health=10,
+        
         animations = anims,
         current_animation = "idle",
         current_frame = 1,
