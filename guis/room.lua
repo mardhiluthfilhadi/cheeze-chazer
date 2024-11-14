@@ -78,7 +78,11 @@ function room.update(game, dt)
         game.players[game.current_player].JUMP = game.keyboard["space"] and game.keyboard["space"].pressed
     end
 
-    for _,it in ipairs(game.players) do it:update(dt) end
+    for _,it in ipairs(game.players) do
+        if it.room == game.rooms[game.current_room_index] then
+            it:update(dt)
+        end
+    end
     local r = game.rooms[game.current_room_index]
     if r then r.update(game, dt) end
 
@@ -95,7 +99,9 @@ function room.draw(game)
     local r = game.rooms[game.current_room_index]
 
     if r then r.background_draw() end
-    for _,it in ipairs(game.players) do it:draw() end
+    for _,it in ipairs(game.players) do
+        if it.room == r then it:draw() end
+    end
     if r then r.foreground_draw() end
     
     lg.setFont(font)

@@ -24,12 +24,13 @@ function M.Rectangle(x,y,w,h)
 end
 
 function M.Clone_Cat(game, change_player)
-    local cat = game.players[game.current_player]:clone()
-    cat.room = game.players[game.current_player].room
+    local player = game.players[game.current_player]
+    local cat = player:clone()
     
     table.insert(game.players, cat)
     if change_player then game.current_player = #game.players end
     cat.index=#game.players
+    cat.room = player.room
 end
 
 function M.New_Game()
