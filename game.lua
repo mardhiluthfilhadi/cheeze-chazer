@@ -13,6 +13,7 @@ M.width,M.height = 0,0
 
 -- ENUMS
 M.state_count = 1
+M.room_count  = 1
 
 function M.Vector2(x,y)
     return {x=x or 0, y=y or x or 0}
@@ -20,6 +21,15 @@ end
 
 function M.Rectangle(x,y,w,h)
     return {x=x or 0, y=y or x or 0, width = w or 10, height = h or w or 10}
+end
+
+function M.Clone_Cat(game, change_player)
+    local cat = game.players[game.current_player]:clone()
+    cat.room = game.players[game.current_player].room
+    
+    table.insert(game.players, cat)
+    if change_player then game.current_player = #game.players end
+    cat.index=#game.players
 end
 
 function M.New_Game()
@@ -52,8 +62,13 @@ end
     }
 ]] -- Mardhi Lh, November 2024
 
-function M.New_Room(room_data)
-    local room = {}
+function M.New_Room(tag, room_data)
+    assert(tag, "tag (param #1) is nil.")
+    assert(M[tag]==nil, "this tag: `"..tostring(tag).."` already exist." )
+    M[tag] = M.room_count
+    M.room_count = M.room_count+1
+
+    local room = {tag=tag}
     room.respawn_positions = room_data.respawn_positions or {M.Vector2(10, 10)}
     room.music_background  = room_data.music_background
     room.collision_rects   = room_data.collision_rects or {M.Rectangle(0,200,800,200)}
@@ -71,10 +86,10 @@ function M.NewGUI(tag)
     M[tag] = M.state_count
     M.state_count = M.state_count+1
     return {
-        buttons={},tag=tag,
-        init=function(game,...)end,
-        update=function(game,dt)end,
-        draw=function(game)end,
+        buttons={}, tag=tag,
+        init   = function(game)end,
+        update = function(game)end,
+        draw   = function(game)end,
     }
 end
 
@@ -120,7 +135,6 @@ function M.get_touch_gui_input(game)
             end
         end
     end
-
     return used
 end
 
@@ -205,7 +219,9 @@ function M.start(game, width, height, cat)
     else
         lw.setMode(game.width, game.height, {resizable=true, fullscreen=false})
     end
-    game.players[game.current_player] = cat
+    table.insert(game.players, cat)
+    game.current_player = 1
+    cat.index=#game.players
 end
 
 function M.add_game_guis(game, ...)

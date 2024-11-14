@@ -1,4 +1,3 @@
-local lg = love.graphics
 
 DEBUG = true 
 BYPASS_TITLE = true
@@ -71,5 +70,4 @@ end
 function love.touchpressed(...)
     Game_Manager.touch_pressed(game, ...)
 end
-
 

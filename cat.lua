@@ -69,8 +69,12 @@ function cat_mt.apply_force(self,x,y,dt)
     end
 end
 
+local function get_boundary(rect)
+    return rect.x, rect.y, rect.width, rect.height
+end
+
 local function resolve_wall_ground_per_collison(self, it_index, it, index)
-    local x,y,w,h = self.rectangle.x,self.rectangle.y,self.rectangle.width,self.rectangle.height
+    local x,y,w,h = get_boundary(self.rectangle)
 
     if it_index==index then return false end
     if y+h < it.y or y > it.y+it.height then return false end
@@ -93,13 +97,14 @@ function cat_mt.resolve_wall_ground(self, index)
 end
 
 function cat_mt.resolve_wall_air(self)
-    local x,y,w,h = self.rectangle.x,self.rectangle.y,self.rectangle.width,self.rectangle.height
+    local x,y,w,h = get_boundary(self.rectangle)
 
     for i,rect in ipairs(self.room.collision_rects) do
         if y+h > rect.y and y < rect.y+rect.height then
             if self.vel.x > 0 and x+w >= rect.x and x < rect.x+rect.width/2 then
                 if self.vel.y > 0 and self.vel.x > 0 then self.sliding = true end
                 self.rectangle.x = rect.x-w
+                self.sliding = true
                 self.vel.x = 0
                 break
 
@@ -231,8 +236,7 @@ function cat_mt.update(self, dt)
     self.rectangle.y = self.rectangle.y + self.vel.y
 end
 
-
-return function (game, anim_path)
+function New_Cat(game, anim_path)
     local anims = {}
     for it_index,it in pairs(anim_path) do
         anims[it_index] = {fps = it.fps, frames = {}}
@@ -247,10 +251,9 @@ return function (game, anim_path)
         rectangle=Game.Rectangle(0,0,64,64),
         begin_jump_height=0,
         vel=Game.Vector2(0,0),
-        sliding=false,
+        sliding=false,index=0,
 
-        life=9,
-        health=10,
+        life=9,health=10,
         
         animations = anims,
         current_animation = "idle",
@@ -273,3 +276,14 @@ return function (game, anim_path)
     setmetatable(cat, cat_mt)
     return cat
 end
+
+
+function cat_mt.clone(self)
+    local cat = New_Cat(self.game, {})
+    cat.animations = self.animations
+    cat.rectangle = Game.Rectangle(get_boundary(self.rectangle))
+    cat.last_facing = self.last_facing
+    return cat
+end
+
+return New_Cat

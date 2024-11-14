@@ -14,7 +14,7 @@ local respawn_positions = {
 }
 
 local fix_y,y,c,dir,font = 200,200, 0, 1, lg.newFont("fonts/VictorMono-Medium.otf", 110)
-local room = Game.New_Room({
+local room = Game.New_Room("START", {
     collision_rects=collision_rects,
     respawn_positions=respawn_positions,
 })
@@ -31,7 +31,7 @@ function room.update(game, dt)
     c = c + .05*dir
     
     if game.players[game.current_player].rectangle.x > game.width then
-        Game.init_gui(game, Game.STATE_ROOM, 2)
+        Game.init_gui(game, Game.STATE_ROOM, Game.TEST)
     end
 end
 

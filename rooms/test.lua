@@ -6,7 +6,8 @@ local collision_rects = {
     Game.Rectangle(  40, 100,  100, 220),
     Game.Rectangle( 240, 100,  100, 220),
 }
-local room = Game.New_Room({
+
+local room = Game.New_Room("TEST", {
     collision_rects=collision_rects,
     respawn_positions={Game.Vector2(0, 360)},
 })
@@ -17,7 +18,7 @@ end
 
 function room.update(game, dt)
     if game.players[game.current_player].rectangle.x < 0 then
-        Game.init_gui(game, Game.STATE_ROOM, 1, 2)
+        Game.init_gui(game, Game.STATE_ROOM, Game.START, 2)
     end
 end
 

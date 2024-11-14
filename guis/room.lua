@@ -32,6 +32,9 @@ function room.init(game, room_index, respawn_index)
 end
 
 function room.update(game, dt)
+    if game.players[1].life == 0 then
+        love.event.quit(1)
+    end
     local gui_used = false
 
     if ls.getOS()=="Android" or ls.getOS()=="IOS" then
@@ -62,22 +65,37 @@ function room.update(game, dt)
         if game.keyboard["m"] and game.keyboard["m"].pressed then
             Game.init_gui(game, Game.STATE_MENU)
         end
+        if game.keyboard["c"] and game.keyboard["c"].pressed then
+            Game.Clone_Cat(game, true)
+        end
+
+        for i=1, #game.players do
+            if game.keyboard[tostring(i)] and game.keyboard[tostring(i)].pressed then
+                game.current_player = i
+            end
+        end
+
         game.players[game.current_player].JUMP = game.keyboard["space"] and game.keyboard["space"].pressed
     end
 
-    for _,it in pairs(game.players) do
-        it:update(dt)
-    end
+    for _,it in ipairs(game.players) do it:update(dt) end
     local r = game.rooms[game.current_room_index]
     if r then r.update(game, dt) end
+
+    if #game.players > 1 then
+        game.players[1].health = game.players[1].health-(#game.players-1)*dt
+        if  game.players[1].health < .5 then
+            game.players[1].life = game.players[1].life - 1
+            game.players[1].health = 10
+        end
+    end
 end
 
 function room.draw(game)
-    -- local cat = game.players[game.current_player]
     local r = game.rooms[game.current_room_index]
 
     if r then r.background_draw() end
-    for _,it in pairs(game.players) do it:draw() end
+    for _,it in ipairs(game.players) do it:draw() end
     if r then r.foreground_draw() end
     
     lg.setFont(font)
@@ -96,12 +114,13 @@ function room.draw(game)
             end
         end
 
-        local it = game.players[game.current_player]
-        for i=1, it.life-1 do
+        local cat = game.players[1]
+        for i=1, cat.life-1 do
             lg.rectangle("line", 10+(i-1)*30, 10, 25, 25)
         end
+        lg.rectangle("line", 10+(cat.life-1)*30, 10, 25*cat.health/10, 25)
 
-        lg.rectangle("line", 10+(it.life-1)*30, 10, 25*it.health/10, 25)
+        local it = game.players[game.current_player]
         lg.setFont(debug_font)
         lg.setColor(0,0,0)
         

@@ -11,7 +11,7 @@ local font = lg.newFont("fonts/VictorMono-Medium.otf", 30)
 local title = Game.NewGUI("STATE_TITLE")
 
 local highlight = 1
-local buttons = {"start", "quit"}
+local buttons = { "start", "quit" }
 for i,it in ipairs(buttons) do
     title.buttons[it] = Game.Text_Button(it, Game.width/2 - 100, 120 + (i-1)*80, 200, 60)
 end
