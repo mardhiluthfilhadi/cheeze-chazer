@@ -76,8 +76,8 @@ local function resolve_wall_ground_per_collison(self, it_index, it, index)
     local x,y,w,h = get_boundary(self.rectangle)
 
     if it_index==index then return false end
-    if y+h < it.y or y > it.y+it.height then return false end
-    
+    if y+(h/4*3) < it.y or y > it.y+it.height then return false end
+
     if x+w > it.x and x < it.x + it.width/2 then
         self.rectangle.x = it.x-w
         self.vel.x = 0
