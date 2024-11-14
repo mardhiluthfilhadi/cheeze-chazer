@@ -2,7 +2,6 @@
 -- TODO: localize user input in the game state
 -- TODO: Create a clone of cat by decrease his life
 
-
 local lg = love.graphics
 local la = love.audio
 local lk = love.keyboard
