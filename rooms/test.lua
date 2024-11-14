@@ -23,7 +23,7 @@ function room.update(game, dt)
     if game.players[game.current_player].rectangle.x < 0 then
         Game.init_gui(game, Game.STATE_ROOM, Game.START, 2)
     end
-    life_mode = game.players[game.current_player].rectangle.x > 700
+    life_mode = game.players[game.current_player].rectangle.x >= 700
         
     if life_mode then
         if game.keyboard["up"] and game.keyboard["up"].isDown then
@@ -31,8 +31,9 @@ function room.update(game, dt)
         elseif game.keyboard["down"] and game.keyboard["down"].isDown then
             room.collision_rects[3].y = room.collision_rects[3].y+30*dt
         end
-        local py = room.collision_rects[3].y - game.players[game.current_player].rectangle.height
-        game.players[game.current_player].rectangle.y = py
+        local cat = game.players[game.current_player]
+        local py = room.collision_rects[3].y - cat.rectangle.height
+        if cat.room==room and cat.grounded then cat.rectangle.y = py end
     end
 end
 

@@ -121,9 +121,10 @@ end
 function cat_mt.apply_gravity(self, dt)
     if self.sliding then self:apply_force(0,35, dt)
     else self:apply_force(0,50, dt) end
-end
+end 
 
 function cat_mt.jump(self, dt, back_jump)
+    self.grounded = false
     self.begin_jump_height = self.rectangle.y
     
     if self.sliding then self.sliding = false end
@@ -157,6 +158,7 @@ function cat_mt.update(self, dt)
         self.vel.y = 0
         self.rotation = 0
         self.sliding = false
+        self.grounded = true
         
         self:resolve_wall_ground(collision_box_index)
         
@@ -247,6 +249,7 @@ function New_Cat(game, anim_path)
         begin_jump_height=0,
         vel=Game.Vector2(0,0),
         sliding=false,index=0,
+        grounded=false,
 
         life=9,health=10,
         
