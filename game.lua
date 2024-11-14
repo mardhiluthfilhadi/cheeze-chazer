@@ -5,9 +5,6 @@ local lm = love.mouse
 local lt = love.touch
 local lk = love.keyboard
 
-local room_mt = {}
-room_mt.__index = room_mt
-
 local M = {}
 M.width,M.height = 0,0
 
@@ -86,12 +83,13 @@ function M.NewGUI(tag)
     assert(M[tag]==nil, "this tag: `"..tostring(tag).."` already exist." )
     M[tag] = M.state_count
     M.state_count = M.state_count+1
-    return {
-        buttons={}, tag=tag,
-        init   = function(game)end,
-        update = function(game)end,
-        draw   = function(game)end,
-    }
+
+    local gui = {tag=tag}
+    gui.buttons = {}
+    gui.init    = function(game)end
+    gui.update  = function(game)end
+    gui.draw    = function(game)end
+    return gui
 end
 
 local function update_game_scale_and_offset(game, width, height)

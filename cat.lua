@@ -127,11 +127,7 @@ end
 function cat_mt.jump(self, dt, back_jump)
     self.begin_jump_height = self.rectangle.y
     
-    if self.sliding then
-        self.sliding = false
-        self.vel.y, self.vel.x = 0,0
-    end
-    
+    if self.sliding then self.sliding = false end
     if self.vel.x == 0 then self:apply_force(back_jump or 0,-650, dt)
     else self:apply_force(back_jump or 0, -520, dt) end
     
