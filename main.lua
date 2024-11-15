@@ -71,3 +71,7 @@ function love.touchpressed(...)
     Game_Manager.touch_pressed(game, ...)
 end
 
+function love.touchreleased(...)
+    Game_Manager.touch_released(game, ...)
+end
+

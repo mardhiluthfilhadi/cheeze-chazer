@@ -184,10 +184,6 @@ local function reset_input(game)
     local touches  = lt.getTouches()
     for it_index,it in pairs(game.touches) do
         it.pressed = false
-        it.isDown  = is_touch_id_down(it_index, it, touches)
-        if not it.isDown then
-            it.x, it.y = -100, -100
-        end
     end
     
     for it_index,it in pairs(game.guis[game.state].buttons) do
@@ -277,6 +273,13 @@ function M.touch_pressed(game, id,x,y)
     game.touches[id].pressed = true
     game.touches[id].isDown  = true
     game.touches[id].x,game.touches[id].y = x,y
+end
+
+function M.touch_released(game, id,x,y)
+    game.touches[id] = game.touches[id] or {}
+    game.touches[id].pressed = false
+    game.touches[id].isDown  = false
+    game.touches[id].x,game.touches[id].y = -100,-100
 end
 
 return M
