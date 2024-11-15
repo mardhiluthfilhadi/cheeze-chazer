@@ -203,7 +203,13 @@ function M.draw(game)
         
         game.guis[game.state].draw(game)
     lg.pop()
-    
+    if DEBUG then
+        for _,it in pairs(game.touches) do
+            lg.setColor(1,1,1,.5)
+            lg.circle("fill", it.x, it.y, 10)
+            lg.setColor(1,1,1,1)
+        end
+    end
     draw_bar(game, lg.getWidth(), lg.getHeight())
     reset_input(game)
 end
