@@ -12,10 +12,14 @@ local debug_font = lg.newFont("fonts/VictorMono-Medium.otf", 16)
 local room = Game.NewGUI("STATE_ROOM")
 room.buttons.menu = Game.Text_Button("menu", Game.width - 120, 40, 100, 80)
 
+local btn_up = Game.Text_Button("up", Game.width - 120, Game.height - 340, 100, 80)
+local btn_down = Game.Text_Button("down", Game.width - 120, Game.height - 250, 100, 80)
 if ls.getOS()=="Android" or ls.getOS()=="IOS" or DEBUG then
     room.buttons.right = Game.Text_Button("right", 130, Game.height - 140, 100, 80)
     room.buttons.left  = Game.Text_Button("left", 20, Game.height - 140, 100, 80)
     room.buttons.jump  = Game.Text_Button("jump", Game.width - 120, Game.height - 140, 100, 80)
+    room.buttons.up    = nil
+    room.buttons.down  = nil
 end
 
 function room.init(game, room_index, respawn_index)
@@ -44,6 +48,7 @@ function room.update(game, dt)
         gui_used = Game.get_mouse_gui_input(game)
     end
 
+    local r = game.rooms[game.current_room_index]
     if gui_used then
         if room.buttons.menu.pressed then
             Game.init_gui(game, Game.STATE_MENU)
@@ -52,6 +57,10 @@ function room.update(game, dt)
             game.players[game.current_player].JUMP = room.buttons.jump.pressed
             game.players[game.current_player].MOVE_LEFT = room.buttons.left.isDown
             game.players[game.current_player].MOVE_RIGHT = room.buttons.right.isDown
+            if r.show_up_and_down_button then
+                r.UP_PLATFORM = room.buttons.up.isDown
+                r.DOWN_PLATFORM = room.buttons.down.isDown
+            end
         end
     else
         if game.keyboard["left"] and game.keyboard["left"].isDown then
@@ -83,9 +92,24 @@ function room.update(game, dt)
             it:update(dt)
         end
     end
-    local r = game.rooms[game.current_room_index]
+    
     if r then r.update(game, dt) end
+    if r.show_up_and_down_button then
+        r.hide_up_and_down_button = false
+        if not room.buttons.up and not room.buttons.down then
+            room.buttons.up = btn_up
+            room.buttons.down = btn_down
+        end
+    end
 
+    if r.hide_up_and_down_button then
+        r.show_up_and_down_button = false
+        if room.buttons.up and room.buttons.down then
+            room.buttons.up = nil
+            room.buttons.down = nil
+        end
+    end
+    
     if #game.players > 1 then
         game.players[1].health = game.players[1].health-(#game.players-1)*dt
         if  game.players[1].health < .5 then

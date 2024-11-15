@@ -67,6 +67,12 @@ function M.New_Room(tag, room_data)
     M.room_count = M.room_count+1
 
     local room = {tag=tag}
+    
+    room.show_up_and_down_button = false
+    room.hide_up_and_down_button = false
+    room.UP_PLATFORM = false
+    room.DOWN_PLATFORM = false
+    
     room.respawn_positions = room_data.respawn_positions or {M.Vector2(10, 10)}
     room.music_background  = room_data.music_background
     room.collision_rects   = room_data.collision_rects or {M.Rectangle(0,200,800,200)}
