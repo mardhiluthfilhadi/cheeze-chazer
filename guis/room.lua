@@ -81,7 +81,7 @@ function room.update(game, dt)
 
         for i=1, #game.players do
             if game.keyboard[tostring(i)] and game.keyboard[tostring(i)].pressed then
-                game.current_player = i
+                Game.change_cat(game, i)
             end
         end
 

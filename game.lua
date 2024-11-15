@@ -30,6 +30,13 @@ function M.Clone_Cat(game, change_player)
     cat.room = player.room
 end
 
+function M.change_cat(game, index)
+    if index>#game.players and index<1 then return end
+    game.current_player = index
+    game.current_room_index = M[game.players[index].room.tag]
+end
+
+
 function M.New_Game()
     return {
         players = {},
@@ -158,16 +165,6 @@ local function draw_bar(game, width, height)
         lg.rectangle("fill", 0, game.offy + game.height*game.scaley, width, game.offy)
     end
     lg.setColor(1,1,1)
-end
-
-local function is_touch_id_down(gid, gtouch, touches)
-    for _,it in ipairs(touches) do
-        if gid==it then
-            gtouch.x, gtouch.y = lt.getPosition(it)
-            return true
-        end
-    end
-    return false
 end
 
 local function reset_input(game)
