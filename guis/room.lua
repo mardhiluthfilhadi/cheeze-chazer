@@ -95,21 +95,17 @@ function room.update(game, dt)
     
     if r then r.update(game, dt) end
     if r.show_up_and_down_button then
-        r.hide_up_and_down_button = false
         if not room.buttons.up and not room.buttons.down then
             room.buttons.up = btn_up
             room.buttons.down = btn_down
         end
-    end
-
-    if r.hide_up_and_down_button then
-        r.show_up_and_down_button = false
+    elseif r.hide_up_and_down_button then
         if room.buttons.up and room.buttons.down then
             room.buttons.up = nil
             room.buttons.down = nil
         end
     end
-    
+
     if #game.players > 1 then
         game.players[1].health = game.players[1].health-(#game.players-1)*dt
         if  game.players[1].health < .5 then
