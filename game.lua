@@ -215,11 +215,11 @@ function M.draw(game)
 end
 
 function M.Text_Button(text, x,y,w,h)
-    return {text=text, isDown=false, pressed=false, x=x, y=y, width=w, height=h}
+    return {text=text, isDown=false, pressed=false, x=x, y=y, width=w, height=h,active=true}
 end
 
 function M.Image_Button(images, x,y,w,h)
-    return {images=images, isDown=false, pressed=false, x=x, y=y, width=w, height=h}
+    return {images=images, isDown=false, pressed=false, x=x, y=y, width=w, height=h,active=true}
 end
 
 function M.start(game, width, height, cat)

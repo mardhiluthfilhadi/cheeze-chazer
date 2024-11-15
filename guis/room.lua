@@ -12,14 +12,15 @@ local debug_font = lg.newFont("fonts/VictorMono-Medium.otf", 16)
 local room = Game.NewGUI("STATE_ROOM")
 room.buttons.menu = Game.Text_Button("menu", Game.width - 120, 40, 100, 80)
 
-local btn_up = Game.Text_Button("up", Game.width - 120, Game.height - 340, 100, 80)
-local btn_down = Game.Text_Button("down", Game.width - 120, Game.height - 250, 100, 80)
 if ls.getOS()=="Android" or ls.getOS()=="IOS" or DEBUG then
     room.buttons.right = Game.Text_Button("right", 130, Game.height - 140, 100, 80)
     room.buttons.left  = Game.Text_Button("left", 20, Game.height - 140, 100, 80)
     room.buttons.jump  = Game.Text_Button("jump", Game.width - 120, Game.height - 140, 100, 80)
-    room.buttons.up    = nil
-    room.buttons.down  = nil
+    room.buttons.up    = Game.Text_Button("up", Game.width - 120, Game.height - 340, 100, 80)
+    room.buttons.down  = Game.Text_Button("down", Game.width - 120, Game.height - 250, 100, 80)
+
+    room.buttons.up.active = false
+    room.buttons.down.active = false
 end
 
 function room.init(game, room_index, respawn_index)
@@ -95,15 +96,11 @@ function room.update(game, dt)
     
     if r then r.update(game, dt) end
     if r.show_up_and_down_button then
-        if not room.buttons.up and not room.buttons.down then
-            room.buttons.up = btn_up
-            room.buttons.down = btn_down
-        end
+        room.buttons.up.active = true
+        room.buttons.down.active = true
     elseif r.hide_up_and_down_button then
-        if room.buttons.up and room.buttons.down then
-            room.buttons.up = nil
-            room.buttons.down = nil
-        end
+        room.buttons.up.active = false
+        room.buttons.down.active = false
     end
 
     if #game.players > 1 then
@@ -126,8 +123,10 @@ function room.draw(game)
     
     lg.setFont(font)
     for _,it in pairs(room.buttons) do
-        local w,h = font:getWidth(it.text),font:getHeight()
-        lg.print(it.text, it.x + it.width/2 - w/2, it.y + it.height/2 - h/2)
+        if it.active then
+            local w,h = font:getWidth(it.text),font:getHeight()
+            lg.print(it.text, it.x + it.width/2 - w/2, it.y + it.height/2 - h/2)
+        end
     end
  
     if DEBUG then
