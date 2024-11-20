@@ -4,6 +4,7 @@ local ls = love.system
 local lm = love.mouse
 local lt = love.touch
 local lk = love.keyboard
+if not table.unpack then table.unpack = unpack end
 
 local M = {}
 M.width,M.height = 0,0
@@ -42,6 +43,7 @@ function M.New_Game()
         players = {},
         current_player = 1,
 
+        gui_state_stack = {},
         state = 0,
         width = 0, height = 0,
         scalex = 1, scaley = 1,
@@ -74,9 +76,12 @@ function M.New_Room(tag, room_data)
     M.room_count = M.room_count+1
 
     local room = {tag=tag}
-    
-    room.show_up_and_down_button = false
-    room.hide_up_and_down_button = false
+
+    if DEBUG then
+        room.show_up_and_down_button = false
+        room.hide_up_and_down_button = false
+    end
+
     room.UP_PLATFORM = false
     room.DOWN_PLATFORM = false
     
@@ -203,8 +208,14 @@ function M.draw(game)
             lg.setColor(1,1,1,1)
         end
     end
+
     draw_bar(game, lg.getWidth(), lg.getHeight())
     reset_input(game)
+
+    if #game.gui_state_stack>0 then
+        local s = table.remove(game.gui_state_stack)
+        M.init_gui(game, s.state, table.unpack(s.args))
+    end
 end
 
 function M.Text_Button(text, x,y,w,h)
@@ -241,6 +252,10 @@ function M.add_game_rooms(game, ...)
     for _,it in ipairs(rooms_path) do
         table.insert(game.rooms, require(it))
     end
+end
+
+function M.change_gui(game,state,...)
+    table.insert(game.gui_state_stack, {state=state, args={...}})
 end
 
 function M.init_gui(game, state, ...)

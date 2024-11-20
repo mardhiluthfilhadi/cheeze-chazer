@@ -33,7 +33,7 @@ function title.update(game, dt)
     if gui_used then
         if title.buttons.start.pressed then
             highlight=1
-            Game.init_gui(game, Game.STATE_ROOM, 1)
+            Game.change_gui(game, Game.STATE_ROOM, 1)
         end
         if title.buttons.quit.pressed then
             highlight=2
@@ -52,7 +52,7 @@ function title.update(game, dt)
 
         if game.keyboard["return"] and game.keyboard["return"].pressed then
             if buttons[highlight] == "start" then
-                Game.init_gui(game, Game.STATE_ROOM, 1)
+                Game.change_gui(game, Game.STATE_ROOM, 1)
 
             elseif buttons[highlight] == "quit" then
                 love.event.quit(0)

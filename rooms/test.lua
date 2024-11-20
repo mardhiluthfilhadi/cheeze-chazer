@@ -28,10 +28,12 @@ function room.update(game, dt)
     if life_mode then
         room.show_up_and_down_button = true
         room.hide_up_and_down_button = false
-        if game.keyboard["up"] and game.keyboard["up"].isDown or room.UP_PLATFORM then
-            room.collision_rects[3].y = room.collision_rects[3].y-30*dt
-        elseif game.keyboard["down"] and game.keyboard["down"].isDown or room.DOWN_PLATFORM then
-            room.collision_rects[3].y = room.collision_rects[3].y+30*dt
+        if DEBUG then
+            if game.keyboard["up"] and game.keyboard["up"].isDown or room.UP_PLATFORM then
+                room.collision_rects[3].y = room.collision_rects[3].y-30*dt
+            elseif game.keyboard["down"] and game.keyboard["down"].isDown or room.DOWN_PLATFORM then
+                room.collision_rects[3].y = room.collision_rects[3].y+30*dt
+            end
         end
         local cat = game.players[game.current_player]
         local py = room.collision_rects[3].y - cat.rectangle.height

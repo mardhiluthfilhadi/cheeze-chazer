@@ -38,7 +38,7 @@ function menu.update(game, dt)
         end
         if menu.buttons.title.pressed then
             highlight=2
-            Game.init_gui(game, Game.STATE_TITLE)
+            Game.change_gui(game, Game.STATE_TITLE)
         end
         if menu.buttons.quit.pressed then
             highlight=3

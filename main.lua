@@ -1,5 +1,5 @@
 
-DEBUG = true 
+DEBUG = false 
 BYPASS_TITLE = true
 BEGIN_ROOM = 2
 SILENT = true

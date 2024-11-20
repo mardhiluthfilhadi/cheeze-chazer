@@ -16,11 +16,12 @@ if ls.getOS()=="Android" or ls.getOS()=="IOS" or DEBUG then
     room.buttons.right = Game.Text_Button("right", 130, Game.height - 140, 100, 80)
     room.buttons.left  = Game.Text_Button("left", 20, Game.height - 140, 100, 80)
     room.buttons.jump  = Game.Text_Button("jump", Game.width - 120, Game.height - 140, 100, 80)
-    room.buttons.up    = Game.Text_Button("up", Game.width - 120, Game.height - 340, 100, 80)
-    room.buttons.down  = Game.Text_Button("down", Game.width - 120, Game.height - 250, 100, 80)
-
-    room.buttons.up.active = false
-    room.buttons.down.active = false
+    if DEBUG then
+        room.buttons.up = Game.Text_Button("up", Game.width - 120, Game.height - 340, 100, 80)
+        room.buttons.down = Game.Text_Button("down", Game.width - 120, Game.height - 250, 100, 80)
+        room.buttons.up.active = false
+        room.buttons.down.active = false
+    end
 end
 
 function room.init(game, room_index, respawn_index)
@@ -52,13 +53,13 @@ function room.update(game, dt)
     local r = game.rooms[game.current_room_index]
     if gui_used then
         if room.buttons.menu.pressed then
-            Game.init_gui(game, Game.STATE_MENU)
+            Game.change_gui(game, Game.STATE_MENU)
         end
         if ls.getOS()=="Android" or ls.getOS()=="IOS" or DEBUG then
             game.players[game.current_player].JUMP = room.buttons.jump.pressed
             game.players[game.current_player].MOVE_LEFT = room.buttons.left.isDown
             game.players[game.current_player].MOVE_RIGHT = room.buttons.right.isDown
-            if r.show_up_and_down_button then
+            if DEBUG and r.show_up_and_down_button then
                 r.UP_PLATFORM = room.buttons.up.isDown
                 r.DOWN_PLATFORM = room.buttons.down.isDown
             end
@@ -73,7 +74,7 @@ function room.update(game, dt)
             game.players[game.current_player].MOVE_LEFT  = false
         end
         if game.keyboard["m"] and game.keyboard["m"].pressed then
-            Game.init_gui(game, Game.STATE_MENU)
+            Game.change_gui(game, Game.STATE_MENU)
         end
         if game.keyboard["c"] and game.keyboard["c"].pressed then
             Game.Clone_Cat(game, true)
@@ -95,10 +96,10 @@ function room.update(game, dt)
     end
     
     if r then r.update(game, dt) end
-    if r.show_up_and_down_button then
+    if DEBUG and r.show_up_and_down_button then
         room.buttons.up.active = true
         room.buttons.down.active = true
-    elseif r.hide_up_and_down_button then
+    elseif DEBUG and r.hide_up_and_down_button then
         room.buttons.up.active = false
         room.buttons.down.active = false
     end
